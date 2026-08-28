@@ -1,0 +1,15 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+MONGODB_URI = os.getenv("MONGODB_URI")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "flarex")
+FORECAST_CACHE_TTL_SECONDS = int(os.getenv("FORECAST_CACHE_TTL_SECONDS", "1800"))
+NOAA_HTTP_TIMEOUT_SECONDS = int(os.getenv("NOAA_HTTP_TIMEOUT_SECONDS", "20"))
+FORECAST_REQUEST_TIMEOUT_SECONDS = int(
+    os.getenv("FORECAST_REQUEST_TIMEOUT_SECONDS", "30")
+)
+FORECAST_SCHEDULER_INTERVAL_SECONDS = int(
+    os.getenv("FORECAST_SCHEDULER_INTERVAL_SECONDS", "300")
+)
