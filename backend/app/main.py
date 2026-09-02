@@ -21,7 +21,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await asyncio.wait_for(connect_to_mongo(), timeout=10)
     except asyncio.TimeoutError as error:
         raise RuntimeError("MongoDB startup connection timed out.") from error
+
     logger.info("FlareX has started.")
+
     scheduler = get_forecast_scheduler()
     await scheduler.start()
 
@@ -32,22 +34,26 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await close_mongo_connection()
         logger.info("FlareX has stopped.")
 
+
 app = FastAPI(
     title="FlareX API",
     version="1.0.0",
     lifespan=lifespan,
 )
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://flarex-tan.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(router)
 
@@ -59,6 +65,6 @@ def home():
         "status": "Running",
         "modules": [
             "3-Day Forecast",
-            "27-Day Forecast"
-        ]
+            "27-Day Forecast",
+        ],
     }
