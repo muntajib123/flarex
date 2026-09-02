@@ -108,11 +108,34 @@ function formatValue(column, value) {
     return '—'
   }
 
+  /*
+   * Forecast dates are returned by the API as ISO strings such as:
+   *   2026-09-02T00:00:00
+   *
+   * Extract the calendar date directly so JavaScript does not
+   * apply the user's local timezone and shift the date backward.
+   */
   if (
     column.endsWith('date') &&
     typeof value === 'string'
   ) {
-    const date = new Date(value)
+    const match = value.match(
+      /^(\d{4})-(\d{2})-(\d{2})/,
+    )
+
+    if (!match) {
+      return value
+    }
+
+    const [, year, month, day] = match
+
+    const date = new Date(
+      Date.UTC(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+      ),
+    )
 
     return Number.isNaN(date.getTime())
       ? value
